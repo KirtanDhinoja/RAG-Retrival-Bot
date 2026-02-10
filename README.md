@@ -1,94 +1,36 @@
 # 🤖 Agentic AI RAG Chatbot
 
-A **stateful, agent-driven Retrieval-Augmented Generation (RAG) chatbot** built using **LangGraph** and **Google Gemini Flash**, strictly grounded in the *Agentic AI* eBook.  
-Unlike traditional linear RAG pipelines, this system models the workflow as a **state machine**, enabling fine-grained control over retrieval, context flow, and generation.
+## 🚀 Project Overview
+This project is a high-performance, RAG-based (Retrieval-Augmented Generation) AI Chatbot built strictly to assist executives in understanding **Agentic AI**. It utilizes **LangGraph** for stateful orchestration and **Pinecone** for high-dimensional vector storage.
 
----
-
-## 📌 Overview
-
-This project implements an **Agentic RAG architecture** where retrieval and generation are orchestrated using **LangGraph**. The chatbot answers user queries **only from the ingested knowledge base**, effectively minimizing hallucinations and ensuring factual consistency.
-
-Key highlights:
-- Stateful agent workflow (not a simple chain)
-- Strict context grounding using retrieved documents
-- Optimized to run reliably on **Google AI Studio free-tier limits**
-
----
+The chatbot is grounded exclusively in the **"Agentic AI for Executives"** eBook, ensuring all responses are factual and cited from the provided knowledge base.
 
 ## 🧠 Architecture
+- **Stateful Orchestration**: Built with **LangGraph** to manage a robust two-stage pipeline (Retrieve -> Generate).
+- **Vector Memory**: Uses **Pinecone** to store 3072-dimensional embeddings of the eBook content.
+- **LLM Integration**: Powered by **Google Gemini 3 Flash** for fast, cost-effective, and accurate reasoning.
+- **Strict Grounding**: Implemented a validation layer to prevent hallucinations; if the answer isn't in the eBook, the bot will notify the user.
 
-The system is designed as a **stateful RAG pipeline** with explicit control over each stage.
-
-### 1. Ingestion Pipeline
-- Source: *Agentic AI* eBook (PDF)
-- Loader: `PyPDFLoader`
-- Chunking: `RecursiveCharacterTextSplitter`
-- Strategy: Semantic chunking to preserve contextual coherence within LLM context windows
-
-### 2. Vector Memory
-- Embedding Model: `gemini-embedding-001`
-- Vector Dimension: **3072**
-- Vector Store: **Pinecone (Serverless)**
-- Purpose: High-speed semantic similarity search over document chunks
-
-### 3. Agentic State Machine (LangGraph)
-Instead of a linear chain, the workflow is modeled as a **state machine**:
-
-- **Retrieve Node**
-  - Performs top-K similarity search in Pinecone
-  - Fetches the most relevant document chunks
-
-- **Generate Node**
-  - Uses **Gemini 2.5 / 3 Flash**
-  - A strict system prompt ensures responses are generated **only from retrieved context**
-  - Prevents hallucinations and out-of-scope answers
-
-LangGraph manages transitions between these nodes, enabling controlled and debuggable agent behavior.
-
----
-
-## 🛡️ Hallucination Control
-
-To ensure reliability:
-- The LLM is constrained by a **strict system prompt**
-- Responses are generated **only from retrieved Pinecone context**
-- No external or prior model knowledge is allowed during generation
-
-This makes the chatbot suitable for **knowledge-critical use cases**.
-
----
-
-## 🚦 Rate Limiting & Stability
-
-Google AI Studio free tier enforces a **100 RPM limit**.  
-To handle this reliably:
-- Manual request batching is implemented
-- Controlled time delays are introduced between LLM calls
-- Ensures stable performance without quota errors
-
----
-
-## 🧩 Tech Stack
-
-- **LLM**: Google Gemini 2.5 / Gemini 3 Flash (Free Tier)
-- **Embeddings**: `gemini-embedding-001`
+## 🛠️ Tech Stack (Zero-Cost Focus)
+- **Orchestration**: LangChain, LangGraph
 - **Vector Database**: Pinecone (Serverless)
-- **Orchestration**: LangChain + LangGraph
-- **Backend**: Python
+- **Embeddings**: Google `gemini-embedding-001`
+- **LLM**: Google `gemini-1.5-flash-latest`
 - **UI**: Streamlit
+- **Document Loading**: PyPDF
 
----
+## 🧪 Sample Queries for Testing
+Use these specific queries to verify the bot's grounding in the "Agentic AI for Executives" eBook:
+
+1. **Grounded Retrieval**: "What are the five core pillars of Agentic AI defined in the book?"
+2. **Conceptual Reasoning**: "Explain the difference between traditional AI, non-agentic AI, and agentic systems."
+3. **Industry Application**: "How can Agentic AI be used to solve a crisis in a global supply chain?"
+4. **Technical Specifics**: "What is the BDI model in agent-oriented programming according to the text?"
+5. **Hallucination Prevention**: "What does the eBook say about the best way to train a pet dog?" (The bot should state it doesn't know).
 
 ## ⚙️ Setup & Installation
-
-### Prerequisites
-- Python 3.10+
-- Pinecone account
-- Google AI Studio API key
-
-### Installation
-```bash
-git clone https://github.com/your-username/agentic-ai-rag-chatbot.git
-cd agentic-ai-rag-chatbot
-pip install -r requirements.txt
+1. **Clone the Repo**: `git clone <your-repo-link>`
+2. **Install Dependencies**: `pip install -r requirements.txt`
+3. **Environment Variables**: Create a `.env` file with your `GOOGLE_API_KEY` and `PINECONE_API_KEY`.
+4. **Ingest Data**: Run `python src/ingest.py` to populate your vector database.
+5. **Launch App**: Run `streamlit run src/app.py`.

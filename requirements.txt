@@ -1,0 +1,8 @@
+langchain-google-genai
+langchain-pinecone
+langgraph
+pypdf
+python-dotenv
+streamlit
+numpy==1.26.4
+h5py

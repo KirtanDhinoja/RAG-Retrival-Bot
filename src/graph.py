@@ -7,28 +7,23 @@ from langchain_pinecone import PineconeVectorStore
 
 load_dotenv()
 
-# Define the data structure for our Graph
+
 class GraphState(TypedDict):
     question: str
     context: List[str]
     answer: str
 
-# 1. Initialize Embeddings (Must match ingest.py exactly)
 embeddings = GoogleGenerativeAIEmbeddings(
     model="models/gemini-embedding-001",
-    task_type="retrieval_query" # Note: 'retrieval_query' is best for the chat side
+    task_type="retrieval_query" 
 )
 
-# 2. Connect to Pinecone
 vectorstore = PineconeVectorStore(
     index_name="agentic-ai-index", 
     embedding=embeddings
 )
 
-# 3. Initialize the LLM (Gemini 1.5 Flash is free and fast)
 llm = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash", temperature=0)
-
-# --- Graph Nodes ---
 
 def retrieve(state: GraphState):
     """Fetch relevant chunks from Pinecone"""
@@ -55,7 +50,6 @@ def generate(state: GraphState):
     response = llm.invoke(prompt)
     return {"answer": response.content}
 
-# --- Construct LangGraph ---
 
 workflow = StateGraph(GraphState)
 workflow.add_node("retrieve", retrieve)
@@ -65,5 +59,4 @@ workflow.set_entry_point("retrieve")
 workflow.add_edge("retrieve", "generate")
 workflow.add_edge("generate", END)
 
-# Compile the app
 rag_app = workflow.compile()
